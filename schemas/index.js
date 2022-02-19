@@ -1,11 +1,12 @@
 const mongoose = require('mongoose');
 
 const connect = () => {
-    mongoose.connect('mongodb://localhost:27017/what-the-cha', {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-        ignoreUndefined: true
-    })
+    mongoose.connect(process.env.MONGO_URL)
+    // mongoose.connect(process.env.MONGO_URL, {
+        // useNewUrlParser: true,
+        // useUnifiedTopology: true,
+        // ignoreUndefined: true
+    // })
     .catch(err => console.log(err));
 };
 
