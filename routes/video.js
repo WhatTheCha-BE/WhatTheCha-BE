@@ -7,7 +7,7 @@ const Contents = require('../schemas/contents')
 router.get('/video/:movieId', async (req, res) => {
     try {
         const { movieId } = req.params;
-        const selectMovie = await Contents.findOne( {movieId}, {_id : false} );
+        const selectMovie = await Contents.findOne( { movieId }, { _id : false, __v: false } );
         res.status(200).json({ selectMovie });
     } catch(error) {
         res.status(400).json({ ok : false });
