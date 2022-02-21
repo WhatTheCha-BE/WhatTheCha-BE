@@ -6,6 +6,21 @@ const Content = require("../schemas/contents");
 const Profile = require("../schemas/profiles");
 const User = require("../schemas/users");
 
+router.post('content/list', async (req, res) => {
+  const { profileName, listRelay, want } = req.body;
+
+  const listTop = Content.find({},{_id : false, __v: false, movieId: true, card_image: true}).sort('-average_star').limit(10)
+  let arrRelay = [] 
+  for (let element of listRelay) {
+
+    const movieInfo = Content.find({movieId: element.movieId}, {_id : false, __v: false, movieId: true, card_image: true})
+    arrRelay.push(movieInfo)
+  }
+
+
+
+})
+
 //프로필 선택시 프로필네임에 프로필디비모두담아 보냄
 //1. req.body로 profileName, listRelay, want받기
 //2. 프로필 디비와 비교
