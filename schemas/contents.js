@@ -3,8 +3,6 @@ const mongoose = require('mongoose');
 const contentsSchema = new mongoose.Schema({
     movieId: {
         type: String,
-        required: true,
-        unique: true
     },
     movieName: {
         type: String
