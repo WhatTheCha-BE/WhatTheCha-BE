@@ -78,7 +78,8 @@ router.post("/content/want", async (req, res) => {
       // const want = await Profile.find( want => want.Object.keys(want));
       // const want = await Profile.find({ where: { movieId } });
       // const want = await Profile.findAll({ where: { movieId } });
-      const want = await Content.findOne({ movieId }, { movieId: Number(movieId), _id : false });
+      // const want = await Content.findOne({ }, { _id : false });
+      const want = await Content.findOne({ movieId }, { _id : false });
       
       res.status(200).json({
         want,
@@ -96,13 +97,12 @@ router.post("/content/want", async (req, res) => {
   });
   
   
-  
   //이어보기:리스트get
   //post     /content/continue
 router.post("/content/continue", async (req, res) => {
     try{
       const { movieId } = req.body;
-      const listRelay = await Content.findOne({ movieId }, { movieId: Number(movieId), _id : false });
+      const listRelay = await Content.findOne({ movieId }, { _id : false });
       
       res.status(200).json({
         listRelay,
@@ -118,12 +118,13 @@ router.post("/content/continue", async (req, res) => {
     }
 });
 
+
 //다 본 작품:리스트get
 //post  /content/complete
 router.post("/content/complete", async (req, res) => {
   try{
     const { movieId } = req.body;
-    const complete = await Content.findOne({ movieId }, { movieId: Number(movieId), _id : false });
+    const complete = await Content.findOne({ movieId }, { _id : false });
 
     res.status(200).json({
       complete,
@@ -144,10 +145,10 @@ router.post("/content/complete", async (req, res) => {
 
 //평가한 작품 선택
 //post    /content/doneEvaluation
-router.post("/content/complete", async (req, res) => {
+router.post("/content/doneEvaluation", async (req, res) => {
   try{
     const { movieId } = req.body;
-    const doneEvaluation = await Content.findOne({ movieId }, { movieId: Number(movieId), _id : false });
+    const doneEvaluation = await Content.findOne({ movieId }, { _id : false });
 
     res.status(200).json({
       doneEvaluation,
