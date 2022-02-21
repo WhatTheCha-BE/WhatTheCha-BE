@@ -128,7 +128,7 @@ router.post("/content/want", async (req, res) => {
             ok:true,
             message: "보고싶어요 성공"
         });
-        console.log(`보고싶어요 성공: ${}`);
+        // console.log(`보고싶어요 성공: ${}`);
     } catch (err) {
         res.status(400).json({
             ok:false,
