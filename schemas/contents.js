@@ -9,22 +9,39 @@ const contentsSchema = new mongoose.Schema({
     movieName: {
         type: String
     },
-    //url
-    image: {
+    card_image: {
         type: String
+    },
+    back_image: {
+        type: String
+    },
+    title_image: {
+        type: String
+    },
+    average_star: {
+        type: Number
+    },
+    director: {
+        type: String
+    },
+    actors: {
+        type: Array
     },
     category: {
         type: String
     },
-    actor: [{ 
-        type: String
-    }],
-    detail: {
+    country: {
         type: String
     },
-    starRate: {
+    make_year: {
         type: String
-    }
+    },
+    detail_text: {
+        type: String
+    },
+    numberOfStarRated: {
+        type: String
+    },
 });
 
 module.exports = mongoose.model("Contents", contentsSchema);
