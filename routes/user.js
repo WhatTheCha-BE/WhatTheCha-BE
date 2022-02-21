@@ -10,7 +10,7 @@ const UsersSchema = Joi.object({
   email: Joi.string()
     .pattern(
       new RegExp(
-        "^[a-zA-Z0-9]{4,30}$^([0-9a-zA-Z_.-]+)@([0-9a-zA-Z_-]+)(.[0-9a-zA-Z_-]+){1,2}"
+        "^([0-9a-zA-Z_.-]+)@([0-9a-zA-Z_-]+)(.[0-9a-zA-Z_-]+){1,2}"
       )
     )
     .required(),
@@ -20,8 +20,10 @@ const UsersSchema = Joi.object({
 
 //회원가입      !! 이메일 형식 유효성 검사
 
-router.post("users/signup", async (req, res) => {
+router.post("/users/signup", async (req, res) => {
+  console.log('start sign up')
   try {
+    console.log('/users/signup')
     const { email, password, confirmpassword } =
       await UsersSchema.validateAsync(req.body);
 
@@ -64,7 +66,7 @@ const loginSchema = Joi.object({
   email: Joi.string()
     .pattern(
       new RegExp(
-        "^[a-zA-Z0-9]{4,30}$^([0-9a-zA-Z_.-]+)@([0-9a-zA-Z_-]+)(.[0-9a-zA-Z_-]+){1,2}"
+        "^([0-9a-zA-Z_.-]+)@([0-9a-zA-Z_-]+)(.[0-9a-zA-Z_-]+){1,2}"
       )
     )
     .required(),
@@ -84,7 +86,7 @@ router.post("/users/login", async (req, res) => {
       return;
     }
 
-    const token = jwt.sign({ email: user.email });
+    const token = jwt.sign({ email: user.email }, process.env.TOKENKEY);
     res.send({
       token,
       email,
@@ -97,7 +99,7 @@ router.post("/users/login", async (req, res) => {
   }
 });
 
-router.get('users/me', authMiddelware, async (req, res) => {
+router.get('/users/me', authMiddelware, async (req, res) => {
   // const { token } = res.locals;
   res.send({
     ok:'true',
