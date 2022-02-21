@@ -91,7 +91,6 @@ const User = require("../schemas/users");
 
 
 
-
 //영상 상세 페이지
 // post    /content/detail/:movieId
 router.post("/content/detail/:movieId", async (req,res) => {

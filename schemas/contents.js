@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const contentsSchema = new mongoose.Schema({
     movieId: {
-        type: String,
+        type: Number,
     },
     movieName: {
         type: String
