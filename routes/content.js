@@ -6,105 +6,37 @@ const Content = require("../schemas/contents");
 const Profile = require("../schemas/profiles");
 const User = require("../schemas/users");
 
-router.post('content/list', async (req, res) => {
-  const { profileName, listRelay, want } = req.body;
+// 메인 페이지 전체 리스트
+router.post('/content/list', async (req, res) => {
+  try {
+    const { profileName, listRelay, want } = req.body;
 
-  const listTop = Content.find({},{_id : false, __v: false, movieId: true, card_image: true}).sort('-average_star').limit(10)
-  let arrRelay = [] 
-  for (let element of listRelay) {
+    const listTop = await Content.find({},{_id : false, movieId: true, card_image: true}).sort('-average_star').limit(10);
 
-    const movieInfo = Content.find({movieId: element.movieId}, {_id : false, __v: false, movieId: true, card_image: true})
-    arrRelay.push(movieInfo)
+    let relayList = [];
+    for (let element of listRelay) {
+          const movieInfo = await Content.find({movieId: element.movieId}, {_id : false, movieId: true, card_image: true});
+          relayList.push(movieInfo);
+      };
+  
+    let wantList = [];
+    for (let element of want) {
+    const movieInfomation = await Content.find({movieId: element}, {_id : false, movieId: true, card_image: true});
+      wantList.push(movieInfomation);
+    };
+
+    const dramaList = await Content.find({category: "드라마"}, {_id : false, movieId: true, card_image: true});
+    const actionList = await Content.find({category: "액션"}, {_id : false, movieId: true, card_image: true});
+    const comedyList = await Content.find({category: "코미디"}, {_id : false, movieId: true, card_image: true});
+    const fantasyList = await Content.find({category: "판타지"}, {_id : false, movieId: true, card_image: true});
+
+    const categoryList = {darama : dramaList, action : actionList, comedy : comedyList, fantasy : fantasyList};
+
+    res.status(200).json({ listTop, relayList, wantList, categoryList });
+  } catch(error) {
+    res.status(400).json({ ok : false })
   }
-
-
-
 })
-
-//프로필 선택시 프로필네임에 프로필디비모두담아 보냄
-//1. req.body로 profileName, listRelay, want받기
-//2. 프로필 디비와 비교
-//3. res.json바디로 보내기
-// 3-1 listTop - {movieId:imageUrl}
-//  컨텐츠디비의 starRate에서 movieId, imageUrl뽑아서 키와밸류에 넣기
-// 몽고디비 다큐먼트 불러오는 리밋 - db.collection.find().limit(Number)
-
-
-// //메인 페이지(영상 리스트 부분)
-// // post   /content/list
-// router.post("/content/list", async (req, res) =>{
-//             //프로필     이어보기    보고싶어요
-//     const { profileName, listRelay, want } = req.body;
-//     //listRelay는 profile스키마 [{movieId영화:멈춘지점}]
-//     //want [movieId 보고싶어요영화목록]
-
-//     // listRelay = listRelay.movieId
-//     // want = want.movieId
-
-//     // const existListRelay =  await Profiles.findOne({  });
-//     // const existWant = await Profiles.findOne({  });
-
-//     try {
-//         // const existProfiles =  await Profiles.find({ listRelay: listRelay.movieId });
-//         // const existWant = await Profiles.findOne({ want: want.movieId });
-//         // const existcategory = await Content.findOne({ category });
-//         const existlistTop = await Content.findOne({ starRate });
-
-//         // listTop
-//         //key, value 추출
-//         const listTopKeys = Object.keys(existlistTop);
-//         const listTopValues = Object.values(existlistTop);
-// console.log("111 listTopKeys: ", listTopKeys);
-// console.log("222 listTopValues: ", listTopValues);
-
-//         //movidId에 key, imageUrl에 value 삽입 안됨!!!
-//         // const listTop =  Object.assign(listTopKeys, listTopValues);
-//         const listTop =  {listTopKeys, listTopValues};
-//         console.log("12121,listTop:", listTop);
-
-//         for (const list in listTop){
-//             console.log(listTop.listTopKeys)
-//         }
-
-//         // const listTop = { listTop_movieId, listTop_imageUrl};
-
-//         //
-
-//         return res.status(200).json({
-//             //탑텐 starRate - content디비에서
-//             listTop,
-//             //이어보기
-//             // listRelay:{
-//             //     movieID: existProfiles.listRelay.movieId,
-//             //     imageUrl:urrrrl,
-//             //     relay: existProfiles.
-//             // },
-//             // //보고싶어요
-//             // listWant:{
-//             //     movieID: existWant.want.movieId,
-//             //     imageUrl:
-//             // },
-//             // //카테고리 - content디비에서
-//             // category:{????
-//             //     movieId: existContent.category
-//             // },
-
-//             ok: true,
-//             message:"메인페이지 영상리스트 불러오기 성공!"
-//         })
-
-//     } catch (err) {
-//         res.status(400).json({
-//             ok: false,
-//             errorMessage: "메인페이지 영상리스트 불러오기 실패!"
-//         });
-//     }
-
-// // listR- movieId값뽑기 > 디비에서 찾기
-
-// });
-
-
 
 //영상 상세 페이지
 // post    /content/detail/:movieId
