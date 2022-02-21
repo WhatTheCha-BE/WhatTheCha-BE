@@ -37,9 +37,9 @@ console.log("222 listTopValues: ", listTopValues);
         const listTop_imageUrl = listTopValues;
         const listTop = { listTop_movieId: listTop_imageUrl }; 
 
-        function listTop(key, value){
+        // function listTop(key){
             
-        }
+        // }
 
 
 
