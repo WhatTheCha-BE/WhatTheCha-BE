@@ -21,7 +21,9 @@ const UsersSchema = Joi.object({
 //회원가입      !! 이메일 형식 유효성 검사
 
 router.post("/users/signup", async (req, res) => {
+
   try {
+    console.log('/users/signup')
     const { email, password, confirmpassword } =
       await UsersSchema.validateAsync(req.body);
 
