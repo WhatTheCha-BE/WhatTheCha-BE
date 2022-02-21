@@ -95,21 +95,26 @@ const User = require("../schemas/users");
 // post    /content/detail/:movieId
 router.post("/content/detail/:movieId", async (req,res) => {
     try{
-        const content = await Content.findOne({movieId:req.params}).exec();
-        
+        const { movieId } = req.params;
+        console.log(123123,movieId);
+        // const content = await Content.findOne({ movieId }, { _id: false });
+        const content = await Content.findOne({movieId});
+        console.log("11content", content);
+        console.log("영상상세보기 content타입:", typeof(content));
         res.status(200).json({
-            content,
-            ok:true,
-            message:"영상 상세보기 성공"
+          content,
+          ok:true,
+          message:"영상 상세보기 성공"
         });
-        console.log(`영상상세보기movieDetail: ${movieDetail}`);
-    } catch (err) {
+        console.log("영상상세보기 content:", content);
+      } catch (err) {
         res.status(400).json({
-            ok:false,
-            errorMessage: "영상 상세보기 실패"
+          ok:false,
+          errorMessage: "영상 상세보기 실패"
         });
         console.log(`영상 상세보기에러: ${err}`);
-
+        console.log("영상상세보기 content타입:", typeof(content));
+        
     }
 });
 
@@ -119,16 +124,13 @@ router.post("/content/detail/:movieId", async (req,res) => {
 router.post("/content/want", async (req, res) => {
     try{
         const { movieId } = req.body;
-        const want = 
-        
-        
-        await Profile.findOne({ movieId:want.movieId }).exec();
+        const want = await Profile.findOne({movieId},{ movieId:{"$elemMatch":{"want":"movieId"}} });
         res.status(200).json({
             want,
             ok:true,
             message: "보고싶어요 성공"
         });
-        console.log(`보고싶어요 성공: ${}`);
+        console.log(`보고싶어요 성공: ${want}`);
     } catch (err) {
         res.status(400).json({
             ok:false,
@@ -149,16 +151,7 @@ router.post("/content/want", async (req, res) => {
 //평가한 작품 선택
 //post    /content/doneEvaluation
 
-//플레이페이지
-//get      /video/:movieId
 
-
-//함께보기:진입
-//post       /video/playwith
-//함께보기:채팅입력
-//post        /video/playwith/message
-
-//함께보기:채팅받기
 
 
 
