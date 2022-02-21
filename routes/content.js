@@ -136,29 +136,53 @@ router.post("/content/detail/:movieId", async (req,res) => {
 
 //보고싶어요:리스트get
 // post    /content/want
+//프로필스키마 완성되고 다시 확인해 보기!!!
 router.post("/content/want", async (req, res) => {
-    try{
-        const { movieId } = req.body;
-        const want = await Profile.findOne({movieId},{ movieId:{"$elemMatch":{"want":"movieId"}} });
-        res.status(200).json({
-            want,
-            ok:true,
-            message: "보고싶어요 성공"
-        });
-        console.log(`보고싶어요 성공: ${want}`);
-    } catch (err) {
-        res.status(400).json({
-            ok:false,
-            errorMessage: "보고싶어요 실패"
-        });
-        console.log(`보고싶어요 에러: ${err}`);
+  try{
+      const { movieId } = req.body;
+      //want배열안에 movieId객체값 가져오기
+      // const want = await Profile.findOne({movieId},{ movieId:{"$elemMatch":{"want":"movieId"}} });
+      // const want = await Profile.findOne({ want:{$elemMatch:{ movieId }} });
+      // const want = await Profile.find({ where: { movieId } });
+      const want = await Profile.find( want => want.Object.keys(want));
+
+      
+      res.status(200).json({
+          want,
+          ok:true,
+          message: "보고싶어요 리스트 성공"
+      });
+      console.log(`보고싶어요 리스트 성공: ${want}`);
+  } catch (err) {
+      res.status(400).json({
+          ok:false,
+          errorMessage: "보고싶어요 리스트 실패"
+      });
+      console.log(`보고싶어요 리스트 에러: ${err}`);
     }
+  });
+  
+  
+  
+  //이어보기:리스트get
+  //post     /content/continue
+  router.post("/content/continue", async (req, res) => {
+    try{
+      res.status(200).json({
+
+
+        listRelay,
+        ok:true,
+        message: "이어보기 리스트 성공"
+      });
+    }catch(err){
+      res.status(400).json({
+        ok:false,
+        errorMessage: "이어보기 리스트 실패"
+      });
+      console.log(`이어보기 리스트 에러: ${err}`);
+}
 });
-
-
-
-//이어보기:리스트get
-//post     /content/continue
 
 //다 본 작품:리스트get
 //post  /content/complete
