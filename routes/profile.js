@@ -11,8 +11,13 @@ router.get("/profile", auth, async (req, res, next) => {
   // 이메일(로그인 계정)의 해당 프로필들 보내주기
   const { email } = req.body;
 
-  const checkexist = User.findOne({ email });
+  const checkexist = await User.findOne({ email: email });
+  
+  console.log('checkexist:', checkexist);
+  console.log('length: ', checkexist.profileName);
+  
   if (checkexist.profileName.length === 0) {
+    console.log('생성된 프로필이 없습니다.')
     next();
   }
   const names = checkexist.profileName;
@@ -20,7 +25,8 @@ router.get("/profile", auth, async (req, res, next) => {
   // profile에 Profile DB에서 profileName과 profileImage 담아주기
   for (let i = 0; i < names.length; i++) {
     const findprofile = await Profile.findOne({ profileName: names[i] });
-    profile.i = {
+    console.log('profile: ',findprofile)
+    profile[i] = {
       profileName: findprofile.profileName,
       profileImage: findprofile.profileImage,
     };
@@ -35,9 +41,15 @@ router.get("/profile", auth, async (req, res, next) => {
 router.post("/profile/create", auth, async (req, res) => {
   try {
     const { profileName, profileImage } = req.body;
-    const { email } = req.locals;
+    // const { email } = req.locals;
+    const { email } = req.headers;
+
+    console.log('check get email: ',email)
+    
     // email 값 받기
-    const checkUser = await User.findOne({ email });
+    const checkUser = await User.findOne({ email: email });
+    console.log('/profile/create checkpoint', checkUser.profileName)
+    
     if (checkUser.profileName.length > 3) {
       res.status(400).send({
         ok: "false",
@@ -46,7 +58,12 @@ router.post("/profile/create", auth, async (req, res) => {
       return;
     }
     // users DB에 profileName 추가 (porfile개수 확인용)
-    checkUser.profileName.push(profileName);
+    await User.updateOne({ email: email }, { $push: { profileName: profileName }});
+    // checkUser.profileName.push(profileName);
+    // console.log(User.findOne({ email: email }));
+    // await User.save();
+
+    // console.log(checkUser.profileName);
 
     const profile = new Profile({
       email: email,
