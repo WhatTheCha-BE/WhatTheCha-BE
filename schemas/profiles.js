@@ -4,8 +4,7 @@ const mongoose = require('mongoose');
 const profilesSchema = new mongoose.Schema({
     email : {
         type: String,
-        required: true,
-        unique: true
+        // index: false
     },
     profileName: {
         type: String
@@ -30,5 +29,13 @@ const profilesSchema = new mongoose.Schema({
         type: Array
     }
 });
+
+// profilesSchema.virtual('profile_id').get(function () {
+//     return this._id.toHexString();
+// });
+
+// profilesSchema.set('toJSON', {
+//     virtuals: true,
+// });
     
 module.exports = mongoose.model("Profiles", profilesSchema);

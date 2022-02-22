@@ -12,12 +12,12 @@ router.get("/profile", auth, async (req, res, next) => {
   const { email } = req.body;
 
   const checkexist = await User.findOne({ email: email });
-  
-  console.log('checkexist:', checkexist);
-  console.log('length: ', checkexist.profileName);
-  
+
+  console.log("checkexist:", checkexist);
+  console.log("length: ", checkexist.profileName);
+
   if (checkexist.profileName.length === 0) {
-    console.log('생성된 프로필이 없습니다.')
+    console.log("생성된 프로필이 없습니다.");
     next();
   }
   const names = checkexist.profileName;
@@ -25,7 +25,7 @@ router.get("/profile", auth, async (req, res, next) => {
   // profile에 Profile DB에서 profileName과 profileImage 담아주기
   for (let i = 0; i < names.length; i++) {
     const findprofile = await Profile.findOne({ profileName: names[i] });
-    console.log('profile: ',findprofile)
+    console.log("profile: ", findprofile);
     profile[i] = {
       profileName: findprofile.profileName,
       profileImage: findprofile.profileImage,
@@ -44,12 +44,12 @@ router.post("/profile/create", auth, async (req, res) => {
     // const { email } = req.locals;
     const { email } = req.headers;
 
-    console.log('check get email: ',email)
-    
+    console.log("check get email: ", email);
+
     // email 값 받기
     const checkUser = await User.findOne({ email: email });
-    console.log('/profile/create checkpoint', checkUser.profileName)
-    
+    console.log("/profile/create checkpoint", checkUser.profileName);
+
     if (checkUser.profileName.length > 3) {
       res.status(400).send({
         ok: "false",
@@ -57,13 +57,16 @@ router.post("/profile/create", auth, async (req, res) => {
       });
       return;
     }
-    // users DB에 profileName 추가 (porfile개수 확인용)
-    await User.updateOne({ email: email }, { $push: { profileName: profileName }});
-    // checkUser.profileName.push(profileName);
-    // console.log(User.findOne({ email: email }));
-    // await User.save();
+    for (let i = 0; i < checkUser.profileName.length; i++) {
+      console.log("profileName: ", checkUser.profileName[i]);
+    }
 
-    // console.log(checkUser.profileName);
+    console.log("update 전");
+    await User.updateOne(
+      { email: email },
+      { $push: { profileName: profileName } }
+    );
+    console.log("update 후");
 
     const profile = new Profile({
       email: email,
@@ -73,6 +76,9 @@ router.post("/profile/create", auth, async (req, res) => {
       complete: [],
       doneEvaluation: [],
     });
+
+    console.log(profile);
+    // profile.dropIndexes()
     await profile.save();
 
     res.status(201).send({
@@ -88,14 +94,40 @@ router.post("/profile/create", auth, async (req, res) => {
 });
 
 //프로필 삭제
-router.delete('/profile/delete/:profileName', auth, async (req, res) => {
-    const { profileName } = req.body;
+router.delete("/profile/delete/:profileName", auth, async (req, res) => {
+  const { profileName } = req.params;
+  const { email } = req.headers;
 
-    const existprofileName = await Profile.findOne({ profileName })
-    if(existprofileName){
-        
+  const testname = await User.findOne({ email });
+  console.log(testname);
+  for (let i = 0; i < testname.profileName.length; i++) {
+    if (testname.profileName[i] === profileName) {
+      console.log(testname.profileName[i]);
     }
-})
+  }
+
+  
+
+  try {
+    await User.updateOne(
+      { email: email },
+      { $pull: { profileName: profileName } }
+    );
+    
+    await Profile.deleteOne({ profileName, email });
+
+    res.status(200).send({
+      ok: true,
+      message: "삭제 성공",
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(400).send({
+      ok: false,
+      errorMessage: "삭제 실패",
+    });
+  }
+});
 
 //프로필 선택( 프론트 에서 알아서 하는? )
 
