@@ -155,9 +155,6 @@ router.post("/content/doneEvaluation", async (req, res) => {
 
 
 // //보고싶어요 누르기
-//1. req.body로 movieId,  profileName 받음
-//2.  profileName을 프로필 디비에서 찾고 
-//    그 프로필의 want에 movieId를 추가한다.
 router.post("/content/detail/movieId/want", async (req, res) => {
   try {
     const { movieId, profileName } = req.body;
@@ -165,34 +162,27 @@ router.post("/content/detail/movieId/want", async (req, res) => {
     const existprofileName = await Profile.findOne({ profileName:profileName }, { _id:false });
 console.log(`11existprofileName결과: ${existprofileName}`);
     if (existprofileName.profileName === profileName)
-    console.log(123123, existprofileName.profileName);
-    console.log(789798, profileName);
     
     await Profile.updateOne({ profileName:profileName }, {$push: {want:movieId}});
     res.status(200).json({
       ok: true,
       message: "보고싶어요 등록 성공",
 });
-console.log(567567, existprofileName.want);
-console.log(`22existprofileName결과: ${existprofileName}`);
+console.log(`existprofileName.want:  ${existprofileName.want}`);
+console.log(`existprofileName결과: ${existprofileName}`);
   } catch (err) {
     res.status(400).json({
       ok: false,
       errorMessage: "보고싶어요 등록 실패",
     });
     console.log(`보고싶어요 에러": ${err}`);
-    console.log("55보고싶어요typeof:", typeof(myProfileWant));
-    console.log("566보고싶어요typeof:", Profile.myProfileEvaluation);
+    console.log("보고싶어요typeof:", typeof(myProfileWant));
+    console.log(`보고싶어요 Profile.myProfileEvaluation: ${Profile.myProfileEvaluation}`);
   }
 });
 
 
 //평가 누르기
-//1. req.body로 movieId,  profileName 받음
-//2.  profileName을 프로필 디비에서 찾고 
-//    그 프로필의 doneEvaluation을 찾아서 movieId를 더하기
-//post      /content/detail/movieId/star
-// router.post("/content/detail/movieId/star", authMiddelware, async (req, res) => {
   router.post("/content/detail/movieId/star", async (req, res) => { 
     try { 
       const { movieId, profileName } = req.body; 
