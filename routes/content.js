@@ -59,10 +59,10 @@ router.post('/content/list', async (req, res) => {
 //영상 상세 페이지
 router.post("/content/detail/:movieId", async (req,res) => {
     try{
-        const { movieId } = req.params;
+        const { movieId } = req.body;
         console.log(123123,movieId);
         // const content = await Content.findOne({ movieId }, { _id: false });
-        const content = await Content.findOne({movieId});
+        const content = await Content.findOne({movieId: Number(movieId)});
         console.log("11content", content);
         console.log("영상상세보기 content타입:", typeof(content));
         res.status(200).json({
@@ -86,8 +86,8 @@ router.post("/content/detail/:movieId", async (req,res) => {
 //보고싶어요:리스트
 router.post("/content/want", async (req, res) => {
   try{
-      const { movieId } = req.body;
-      const want = await Content.findOne({ movieId }, { _id : false });
+      const { profileName } = req.body;
+      const want = await Profile.findOne({ profileName }, { _id : false });
       
       res.status(200).json({
         want,
