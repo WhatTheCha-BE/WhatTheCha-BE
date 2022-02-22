@@ -57,27 +57,23 @@ router.post('/content/list', async (req, res) => {
 
 
 //영상 상세 페이지
-router.post("/content/detail/:movieId", async (req,res) => {
+router.post("/content/detail/", async (req,res) => {
     try{
         const { movieId } = req.body;
-        console.log(123123,movieId);
         // const content = await Content.findOne({ movieId }, { _id: false });
         const content = await Content.findOne({movieId: Number(movieId)});
-        console.log("11content", content);
         console.log("영상상세보기 content타입:", typeof(content));
         res.status(200).json({
           content,
           ok:true,
           message:"영상 상세보기 성공"
         });
-        console.log("영상상세보기 content:", content);
       } catch (err) {
         res.status(400).json({
           ok:false,
           errorMessage: "영상 상세보기 실패"
         });
         console.log(`영상 상세보기에러: ${err}`);
-        console.log("영상상세보기 content타입:", typeof(content));
         
     }
 });
