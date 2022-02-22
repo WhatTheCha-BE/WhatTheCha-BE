@@ -70,7 +70,7 @@ const loginSchema = Joi.object({
       )
     )
     .required(),
-  password: Joi.string().pattern(new RegExp("^[0-9a-zA-Z가-힣ㄱ-ㅎㅏ-ㅣ`~!@#$%^&*()\\-_=+\\[{\\]}\\\\|;:'\",<.>/?\\s]$")).required(),
+  password: Joi.string().pattern(new RegExp("^[0-9a-zA-Z가-힣ㄱ-ㅎㅏ-ㅣ`~!@#$%^&*()\\-_=+\\[{\\]}\\\\|;:'\",<.>/?\\s]{4,30}$")).required(),
 });
 //로그인 라우터
 router.post("/users/login", async (req, res) => {
