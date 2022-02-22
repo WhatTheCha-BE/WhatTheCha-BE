@@ -33,7 +33,7 @@ router.post('/content/list', async (req, res) => {
     const comedyList = await Content.find({category: "코미디"}, {_id : false, movieId: true, card_image: true});
     const fantasyList = await Content.find({category: "판타지"}, {_id : false, movieId: true, card_image: true});
 
-    const categoryList = {darama : dramaList, action : actionList, comedy : comedyList, fantasy : fantasyList};
+    const categoryList = {drama : dramaList, action : actionList, comedy : comedyList, fantasy : fantasyList};
 
     res.status(200).json({ listTop, relayList, wantList, categoryList });
   } catch(error) {
