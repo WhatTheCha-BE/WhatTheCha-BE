@@ -57,7 +57,7 @@ router.post('/content/list', async (req, res) => {
 
 
 //영상 상세 페이지
-router.post("/content/detail/", async (req,res) => {
+router.post("/content/detail", async (req,res) => {
     try{
         const { movieId } = req.body;
         // const content = await Content.findOne({ movieId }, { _id: false });
@@ -168,12 +168,21 @@ router.post("/content/doneEvaluation", async (req, res) => {
 router.post("/content/detail/movieId/want", async (req, res) => {
   try {
     const { movieId, profileName } = req.body;
-    
+    console.log("11movieId", movieId);
+    console.log("11movieId타입", typeof(movieId));
+    console.log("22profileName", profileName);
+    console.log("22profileName타입", typeof(profileName));
+
+
     const existprofileName = await Profile.findOne({ profileName:profileName }, { _id:false });
 console.log(`11existprofileName결과: ${existprofileName}`);
     if (existprofileName.profileName === profileName)
+    console.log("33existprofileName: ", existprofileName);
+    console.log("33existprofileName.profileName: ", existprofileName.profileName);
     
-    await Profile.updateOne({ profileName:profileName }, {$push: {want:movieId}});
+    await Profile.updateOne({ profileName:profileName }, {$push: {want:movieId}, });
+    console.log("44existprofileName: ", existprofileName);
+    console.log("44existprofileName.profileName: ", existprofileName.profileName);
     res.status(200).json({
       ok: true,
       message: "보고싶어요 등록 성공",
