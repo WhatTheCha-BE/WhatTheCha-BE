@@ -1,12 +1,17 @@
 const { urlencoded } = require("express");
 const express = require("express");
-const { $where } = require("../schemas/contents");
 const router = express.Router();
-const Content = require("../schemas/contents");
-const Profile = require("../schemas/profiles");
-const User = require("../schemas/users");
 const authMiddelware = require("../middelwares/auth-middleware");
 const { exist } = require("joi");
+
+const { $where } = require("../schemas/contents");
+const Content = require("../schemas/contents");
+const ExclusiveContent = require('../schemas/exclusiveContent')
+const TitleContent = require('../schemas/titleContent')
+const WatchaParty = require('../schemas/watchaParty')
+
+const Profile = require("../schemas/profiles");
+const User = require("../schemas/users");
 
 
 // 메인 페이지 전체 리스트
@@ -28,14 +33,23 @@ router.post('/content/list', async (req, res) => {
       wantList.push(movieInfomation);
     };
 
-    const dramaList = await Content.find({category: "드라마"}, {_id : false, movieId: true, card_image: true});
-    const actionList = await Content.find({category: "액션"}, {_id : false, movieId: true, card_image: true});
-    const comedyList = await Content.find({category: "코미디"}, {_id : false, movieId: true, card_image: true});
-    const fantasyList = await Content.find({category: "판타지"}, {_id : false, movieId: true, card_image: true});
+    const exclusiveList = await ExclusiveContent.find({})
+    const titleList = await TitleContent.find({})
+    const watchaPartyList = await WatchaParty.find({})
 
-    const categoryList = {darama : dramaList, action : actionList, comedy : comedyList, fantasy : fantasyList};
+    const dramaList = await Content.find({$or:[ { category: "드라마" }, { category: "단편" } ]}, {_id : false, movieId: true, card_image: true});
+    const action_war_List = await Content.find({$or:[ { category: "액션" }, { category: "전쟁" } ]}, {_id : false, movieId: true, card_image: true});
+    const comedy_adventure__biography_List = await Content.find({$or:[ { category: "코미디" }, { category: "모험" }, { category: "전기" } ]}, {_id : false, movieId: true, card_image: true});
+    const fantasy_crime_romanse_etc_list = await Content.find({$or:[ { category: "판타지" }, { category: "범죄" },{ category: "로맨스" }, { category: "애니메이션" },{ category: "스릴러" }, { category: "SF" }, { category: "미스터리" } ]}, {_id : false, movieId: true, card_image: true});
 
-    res.status(200).json({ listTop, relayList, wantList, categoryList });
+    const categoryList = {
+      drama : dramaList,
+      action_war : action_war_List,
+      comedy_adventure__biography : comedy_adventure__biography_List,
+      fantasy_crime_romanse_etc : fantasy_crime_romanse_etc_list
+    };
+
+    res.status(200).json({ listTop, relayList, wantList, exclusiveList, titleList, watchaPartyList, categoryList });
   } catch(error) {
     res.status(400).json({ ok : false })
   }
