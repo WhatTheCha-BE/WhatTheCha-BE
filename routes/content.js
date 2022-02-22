@@ -87,7 +87,7 @@ router.post("/content/want", async (req, res) => {
         errorMessage: "보고싶어요 리스트 실패"
       });
       console.log(`보고싶어요 리스트 에러: ${err}`);
-    }
+    } 
   });
   
   
