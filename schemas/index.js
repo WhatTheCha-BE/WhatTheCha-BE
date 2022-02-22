@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const connect = () => {
-    mongoose.connect('mongodb://localhost:27017/TheCha', {
+    mongoose.connect(process.env.MONGO_URL || 'mongodb://localhost:27017/TheCha', {
         // ignoreUndefined: true
     })
     // mongoose.connect(process.env.MONGO_URL, {

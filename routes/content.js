@@ -59,7 +59,7 @@ router.post('/content/list', async (req, res) => {
 //영상 상세 페이지
 router.post("/content/detail/:movieId", async (req,res) => {
     try{
-        const { movieId } = req.body;
+        const { movieId } = req.params;
         console.log(123123,movieId);
         // const content = await Content.findOne({ movieId }, { _id: false });
         const content = await Content.findOne({movieId});
