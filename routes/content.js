@@ -5,6 +5,9 @@ const router = express.Router();
 const Content = require("../schemas/contents");
 const Profile = require("../schemas/profiles");
 const User = require("../schemas/users");
+const authMiddelware = require("../middelwares/auth-middleware");
+const { exist } = require("joi");
+
 
 // 메인 페이지 전체 리스트
 router.post('/content/list', async (req, res) => {
@@ -38,8 +41,8 @@ router.post('/content/list', async (req, res) => {
   }
 })
 
+
 //영상 상세 페이지
-// post    /content/detail/:movieId
 router.post("/content/detail/:movieId", async (req,res) => {
     try{
         const { movieId } = req.params;
@@ -66,19 +69,10 @@ router.post("/content/detail/:movieId", async (req,res) => {
 });
 
 
-//보고싶어요:리스트get
-// post    /content/want
-//프로필스키마 완성되고 다시 확인해 보기!!!
+//보고싶어요:리스트
 router.post("/content/want", async (req, res) => {
   try{
       const { movieId } = req.body;
-      //want배열안에 movieId객체값 가져오기
-      // const want = await Profile.findOne({movieId},{ movieId:{"$elemMatch":{"want":"movieId"}} });
-      // const want = await Profile.findOne({ want:{$elemMatch:{ movieId }} });
-      // const want = await Profile.find( want => want.Object.keys(want));
-      // const want = await Profile.find({ where: { movieId } });
-      // const want = await Profile.findAll({ where: { movieId } });
-      // const want = await Content.findOne({ }, { _id : false });
       const want = await Content.findOne({ movieId }, { _id : false });
       
       res.status(200).json({
@@ -97,8 +91,7 @@ router.post("/content/want", async (req, res) => {
   });
   
   
-  //이어보기:리스트get
-  //post     /content/continue
+//이어보기:리스트
 router.post("/content/continue", async (req, res) => {
     try{
       const { movieId } = req.body;
@@ -119,8 +112,7 @@ router.post("/content/continue", async (req, res) => {
 });
 
 
-//다 본 작품:리스트get
-//post  /content/complete
+//다 본 작품:리스트
 router.post("/content/complete", async (req, res) => {
   try{
     const { movieId } = req.body;
@@ -141,10 +133,7 @@ router.post("/content/complete", async (req, res) => {
 });
 
 
-
-
 //평가한 작품 선택
-//post    /content/doneEvaluation
 router.post("/content/doneEvaluation", async (req, res) => {
   try{
     const { movieId } = req.body;
@@ -166,69 +155,64 @@ router.post("/content/doneEvaluation", async (req, res) => {
 
 
 // //보고싶어요 누르기
-// //profileName 프로필디비저장
-// //movieId 컨턴츠디비저장
-// //바디로 받고, 디비에 저장하고, req로 보내기
-// post       /content/detail/movieId/want
+//1. req.body로 movieId,  profileName 받음
+//2.  profileName을 프로필 디비에서 찾고 
+//    그 프로필의 want에 movieId를 추가한다.
 router.post("/content/detail/movieId/want", async (req, res) => {
-  const { movieId, profileName } = req.body;
-
   try {
-    const result1 = await Profiles.create({ movieId });
-    const result2 = await Users.create({ profileName });
-    console.log("보고싶어요result1:", result1);
-    console.log("보고싶어요result2:", result2);
-
+    const { movieId, profileName } = req.body;
+    
+    const existprofileName = await Profile.findOne({ profileName:profileName }, { _id:false });
+console.log(`11existprofileName결과: ${existprofileName}`);
+    if (existprofileName.profileName === profileName)
+    console.log(123123, existprofileName.profileName);
+    console.log(789798, profileName);
+    
+    await Profile.updateOne({ profileName:profileName }, {$push: {want:movieId}});
     res.status(200).json({
       ok: true,
       message: "보고싶어요 등록 성공",
-    });
-    console.log(`보고싶어요1결과: ${result1}`);
-    console.log(`보고싶어요2결과: ${result2}`);
+});
+console.log(567567, existprofileName.want);
+console.log(`22existprofileName결과: ${existprofileName}`);
   } catch (err) {
     res.status(400).json({
       ok: false,
       errorMessage: "보고싶어요 등록 실패",
     });
-    console.log(`${err}에러로 보고싶어요 등록 실패`);
+    console.log(`보고싶어요 에러": ${err}`);
+    console.log("55보고싶어요typeof:", typeof(myProfileWant));
+    console.log("566보고싶어요typeof:", Profile.myProfileEvaluation);
   }
 });
-
 
 
 //평가 누르기
-//1. req.body로 movieId, rate,  profileName
-//2.            컨텐츠   컨텐츠  프로필 디비에서 찾기
-//디비에 저장
-// profileName이 저장되어야 하는곳은??
-// Content디비에 저장하기
-//res.json바디로 보내기 ok, 사인
-
+//1. req.body로 movieId,  profileName 받음
+//2.  profileName을 프로필 디비에서 찾고 
+//    그 프로필의 doneEvaluation을 찾아서 movieId를 더하기
 //post      /content/detail/movieId/star
-router.post("/content/detail/movieId/star", async (req, res) => {
-  //
-  const { movieId, profileName } = req.body;
-
-  try {
-    const result = await Content.create({ movieId, starRate: rate });
-    const result2 = await Profile.create({ profileName });
-console.log(`평가결과1: ${result}`);
-console.log(`평가결과1: ${result2}`);
-
-    res.status(200).json({
-      ok: true,
-      message: "평가 성공",
-    });
-  } catch (err) {
-    res.status(400).json({
-      ok: false,
-      errorMessage: "평가 실패",
-    });
-    console.log(`${err}에러로 평가실패`);
-  }
+// router.post("/content/detail/movieId/star", authMiddelware, async (req, res) => {
+  router.post("/content/detail/movieId/star", async (req, res) => { 
+    try { 
+      const { movieId, profileName } = req.body; 
+      
+      //profileName을 기준으로 doneEvaluation을 찾는다.
+      const myProfileprofileName = await Profile.findOne({ profileName:profileName }, { _id: false });
+      if (myProfileprofileName.profileName === profileName)
+      
+      await Profile.updateOne({ profileName:profileName }, {$push: {doneEvaluation:movieId}});
+      res.status(200).json({
+        ok: true,
+        message: "평가 성공",
+      });
+      } catch (err) {
+        res.status(400).json({
+          ok: false,
+          errorMessage: "평가 실패",
+        });
+          console.log(`평가 에러: ${err}`);
+      }
 });
-
-//다본 작품
-//post
 
 module.exports = router;
