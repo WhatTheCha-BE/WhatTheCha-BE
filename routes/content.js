@@ -168,6 +168,7 @@ router.post("/content/doneEvaluation", async (req, res) => {
 router.post("/content/detail/movieId/want", async (req, res) => {
   try {
     const { movieId, profileName } = req.body;
+    console.log(123,req.body);
     console.log("11movieId", movieId);
     console.log("11movieId타입", typeof(movieId));
     console.log("22profileName", profileName);
