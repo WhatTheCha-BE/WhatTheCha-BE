@@ -40,6 +40,9 @@ const contentsSchema = new mongoose.Schema({
     numberOfStarRated: {
         type: String
     },
+      youtubeId: {
+        type: String
+    }
 });
 
 module.exports = mongoose.model("Contents", contentsSchema);
