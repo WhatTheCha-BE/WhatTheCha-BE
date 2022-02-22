@@ -9,7 +9,7 @@ const router = express.Router();
 // 프로필 선택 페이지 (해당 계정의 프로필불러오기 (프로필 내부 정보 같이 보내주기 ))
 router.get("/profile", auth, async (req, res, next) => {
   // 이메일(로그인 계정)의 해당 프로필들 보내주기
-  const { email } = req.body;
+  const { email } = req.headers;
 
   const checkexist = await User.findOne({ email: email });
 
