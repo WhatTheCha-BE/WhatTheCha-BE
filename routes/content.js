@@ -57,7 +57,6 @@ router.post('/content/list', async (req, res) => {
 router.post("/content/detail", async (req,res) => {
     try{
         const { movieId } = req.body;
-        // const content = await Content.findOne({ movieId }, { _id: false });
         const content = await Content.findOne({movieId: Number(movieId)});
         res.status(200).json({
           content,
@@ -77,17 +76,25 @@ router.post("/content/detail", async (req,res) => {
 router.get("/content/want", async (req, res) => {
   try{
       const { profileName } = req.body;
-      console.log("1111req.body 리스트:", req.body);
-      console.log("1111profileName 리스트:", profileName);
-      console.log("1111profileName타타입 리스트:", typeof(profileName));
       
-
+      //프로필디비에서 profileName기준으로 want를 찾는다.
+      const existprofileName = await Profile.findOne({ profileName }, {_id:false, want:true});
+      
+      //want안에 movieId를 기준으로 card_image를 찾는다.
+      const wantMovieId = existprofileName.want
+      const want = await Content.find({ movieId:wantMovieId }, { _id:false, movieId:true, card_image:true });
+          res.status(200).json({
+            want,
+            ok:true,
+            message: "보고싶어요 리스트 성공"
+          });
+        console.log(`보고싶어요 리스트 성공: ${want}`);
     } catch (err) {
       res.status(400).json({
         ok:false,
         errorMessage: "보고싶어요 리스트 실패"
       });
-
+      console.log(`보고싶어요 리스트 에러: ${err}`);
     } 
   });
   
@@ -132,11 +139,16 @@ router.get("/content/complete", async (req, res) => {
 });
 
 
-//평가한 작품 선택
+//평가한 작품 리스트
 router.get("/content/doneEvaluation", async (req, res) => {
   try{
-    const { movieId } = req.body;
-    const doneEvaluation = await Content.findOne({ movieId }, { _id : false });
+    //프로필디비에서 profileName기준으로 doneEvaluation 찾는다.
+    const { profileName } = req.body;
+    const existdoneEvaluation = await Profile.findOne({ profileName }, { _id : false, doneEvaluation:true });
+    
+    //want안에 movieId를 기준으로 card_image를 찾는다.
+    const doneEvalMovieId = existdoneEvaluation.doneEvaluation
+    const doneEvaluation = await Content.find({ movieId:doneEvalMovieId }, { _id:false, movieId:true, card_image:true });
 
     res.status(200).json({
       doneEvaluation,
@@ -148,8 +160,10 @@ router.get("/content/doneEvaluation", async (req, res) => {
       ok:false,
       errorMessage: "평가한 작품 리스트 실패"
     });
+    console.log(`평가한 작품 리스트 에러: ${err}`);
   }
 });
+
 
 
 // //보고싶어요 누르기
