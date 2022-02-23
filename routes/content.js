@@ -74,27 +74,26 @@ router.post("/content/detail", async (req,res) => {
 
 
 //보고싶어요:리스트
-router.post("/content/want", async (req, res) => {
+router.get("/content/want", async (req, res) => {
   try{
       const { profileName } = req.body;
-      const want = await Profile.findOne({ profileName }, { _id : false });
+      console.log("1111req.body 리스트:", req.body);
+      console.log("1111profileName 리스트:", profileName);
+      console.log("1111profileName타타입 리스트:", typeof(profileName));
       
-      res.status(200).json({
-        want,
-        ok:true,
-        message: "보고싶어요 리스트 성공"
-      });
+
     } catch (err) {
       res.status(400).json({
         ok:false,
         errorMessage: "보고싶어요 리스트 실패"
       });
+
     } 
   });
   
   
 //이어보기:리스트
-router.post("/content/continue", async (req, res) => {
+router.get("/content/continue", async (req, res) => {
     try{
       const { movieId } = req.body;
       const listRelay = await Content.findOne({ movieId }, { _id : false });
@@ -114,7 +113,7 @@ router.post("/content/continue", async (req, res) => {
 
 
 //다 본 작품:리스트
-router.post("/content/complete", async (req, res) => {
+router.get("/content/complete", async (req, res) => {
   try{
     const { movieId } = req.body;
     const complete = await Content.findOne({ movieId }, { _id : false });
@@ -134,7 +133,7 @@ router.post("/content/complete", async (req, res) => {
 
 
 //평가한 작품 선택
-router.post("/content/doneEvaluation", async (req, res) => {
+router.get("/content/doneEvaluation", async (req, res) => {
   try{
     const { movieId } = req.body;
     const doneEvaluation = await Content.findOne({ movieId }, { _id : false });
@@ -154,14 +153,11 @@ router.post("/content/doneEvaluation", async (req, res) => {
 
 
 // //보고싶어요 누르기
+// +1, -1로 설정하기
 router.post("/content/detail/movieId/want", async (req, res) => {
   try {
     const { movieId, profileName } = req.body;
 
-    const existprofileName = await Profile.findOne({ profileName:profileName }, { _id:false });
-    if (existprofileName.profileName === profileName)
-    
-    await Profile.updateOne({ profileName:profileName }, {$push: {want:movieId}, });
     res.status(200).json({
       ok: true,
       message: "보고싶어요 등록 성공",
@@ -171,11 +167,13 @@ router.post("/content/detail/movieId/want", async (req, res) => {
       ok: false,
       errorMessage: "보고싶어요 등록 실패",
     });
+
   }
 });
 
 
 //평가 누르기
+//+1만 가능하게 수정하기
   router.post("/content/detail/movieId/star", async (req, res) => { 
     try { 
       const { movieId, profileName } = req.body; 
