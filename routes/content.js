@@ -1,10 +1,7 @@
-const { urlencoded } = require("express");
 const express = require("express");
 const router = express.Router();
 const authMiddelware = require("../middelwares/auth-middleware");
-const { exist } = require("joi");
 
-const { $where } = require("../schemas/contents");
 const Content = require("../schemas/contents");
 const ExclusiveContent = require('../schemas/exclusiveContent')
 const TitleContent = require('../schemas/titleContent')
@@ -62,7 +59,6 @@ router.post("/content/detail", async (req,res) => {
         const { movieId } = req.body;
         // const content = await Content.findOne({ movieId }, { _id: false });
         const content = await Content.findOne({movieId: Number(movieId)});
-        console.log("영상상세보기 content타입:", typeof(content));
         res.status(200).json({
           content,
           ok:true,
@@ -72,9 +68,7 @@ router.post("/content/detail", async (req,res) => {
         res.status(400).json({
           ok:false,
           errorMessage: "영상 상세보기 실패"
-        });
-        console.log(`영상 상세보기에러: ${err}`);
-        
+        });        
     }
 });
 
@@ -87,32 +81,13 @@ router.get("/content/want", async (req, res) => {
       console.log("1111profileName 리스트:", profileName);
       console.log("1111profileName타타입 리스트:", typeof(profileName));
       
-      
-      //movieId 길이 만큼 want 리스트 출력
-      let wantTotal = [];
-      for ( let i = 0; i < profileName.length; i++ ){
-        const wantprofileName = await Profile.find({ profileName:i.profileName }, { _id : false });
-        const forwant = wantprofileName[i];
-        wantTotal.push(forwant);
 
-        console.log("222wantTotal 리스트:", wantprofileName);
-          console.log("2233forwant 리스트:", forwant);
-          console.log("2244wantprofileName 리스트:", wantprofileName[i]);
-          
-
-          res.status(200).json({
-            want,
-            ok:true,
-            message: "보고싶어요 리스트 성공"
-          });
-        }
-        // console.log(`보고싶어요 리스트 성공: ${want}`);
     } catch (err) {
       res.status(400).json({
         ok:false,
         errorMessage: "보고싶어요 리스트 실패"
       });
-      // console.log(`보고싶어요 리스트 에러: ${err}`);
+
     } 
   });
   
@@ -133,7 +108,6 @@ router.get("/content/continue", async (req, res) => {
         ok:false,
         errorMessage: "이어보기 리스트 실패"
       });
-      console.log(`이어보기 리스트 에러: ${err}`);
     }
 });
 
@@ -154,7 +128,6 @@ router.get("/content/complete", async (req, res) => {
       ok:false,
       errorMessage: "다 본 작품 리스트 실패"
     });
-    console.log(`다 본 작품 리스트 에러: ${err}`);
   }
 });
 
@@ -175,7 +148,6 @@ router.get("/content/doneEvaluation", async (req, res) => {
       ok:false,
       errorMessage: "평가한 작품 리스트 실패"
     });
-    console.log(`평가한 작품 리스트 에러: ${err}`);
   }
 });
 
@@ -185,12 +157,7 @@ router.get("/content/doneEvaluation", async (req, res) => {
 router.post("/content/detail/movieId/want", async (req, res) => {
   try {
     const { movieId, profileName } = req.body;
-    
-    const existprofileName = await Profile.findOne({ profileName:profileName }, { _id:false });
-    console.log(`11existprofileName결과: ${existprofileName}`);
-    if (existprofileName.profileName === profileName)
-    
-    await Profile.updateOne({ profileName:profileName }, {$push: {want:movieId}});
+
     res.status(200).json({
       ok: true,
       message: "보고싶어요 등록 성공",
@@ -200,7 +167,7 @@ router.post("/content/detail/movieId/want", async (req, res) => {
       ok: false,
       errorMessage: "보고싶어요 등록 실패",
     });
-    console.log(`보고싶어요 에러": ${err}`);
+
   }
 });
 
@@ -225,7 +192,6 @@ router.post("/content/detail/movieId/want", async (req, res) => {
           ok: false,
           errorMessage: "평가 실패",
         });
-          console.log(`평가 에러: ${err}`);
       }
 });
 
