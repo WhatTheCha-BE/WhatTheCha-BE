@@ -68,6 +68,7 @@ router.post("/profile/create", auth, async (req, res) => {
     );
     console.log("update 후");
 
+    console.log('프로필 저장전 체크: ', profileName, profileImage)
     const profile = new Profile({
       email: email,
       profileName: profileName,
