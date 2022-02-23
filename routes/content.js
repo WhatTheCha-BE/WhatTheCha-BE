@@ -16,17 +16,17 @@ router.post('/content/list', async (req, res) => {
   try {
     const { profileName, listRelay, want } = req.body;
 
-    const listTop = await Content.find({},{_id : false, movieId: true, card_image: true}).sort('-average_star').limit(10);
+    const listTop = await Content.find({},{_id : false, movieName : true, movieId: true, category: true, make_year: true, card_image: true}).sort('-average_star').limit(10);
 
     let relayList = [];
     for (let element of listRelay) {
-          const movieInfo = await Content.find({movieId: element.movieId}, {_id : false, movieId: true, card_image: true});
+          const movieInfo = await Content.find({movieId: element.movieId}, {_id : false, movieName : true, movieId: true, category: true, make_year: true, card_image: true});
           relayList.push(movieInfo);
       };
   
     let wantList = [];
     for (let element of want) {
-    const movieInfomation = await Content.find({movieId: element}, {_id : false, movieId: true, card_image: true});
+    const movieInfomation = await Content.find({movieId: element}, {_id : false, movieName : true, movieId: true, category: true, make_year: true, card_image: true});
       wantList.push(movieInfomation);
     };
 
@@ -34,10 +34,10 @@ router.post('/content/list', async (req, res) => {
     const titleList = await TitleContent.find({})
     const watchaPartyList = await WatchaParty.find({})
 
-    const dramaList = await Content.find({$or:[ { category: "드라마" }, { category: "단편" } ]}, {_id : false, movieId: true, card_image: true});
-    const action_war_List = await Content.find({$or:[ { category: "액션" }, { category: "전쟁" } ]}, {_id : false, movieId: true, card_image: true});
-    const comedy_adventure__biography_List = await Content.find({$or:[ { category: "코미디" }, { category: "모험" }, { category: "전기" } ]}, {_id : false, movieId: true, card_image: true});
-    const fantasy_crime_romanse_etc_list = await Content.find({$or:[ { category: "판타지" }, { category: "범죄" },{ category: "로맨스" }, { category: "애니메이션" },{ category: "스릴러" }, { category: "SF" }, { category: "미스터리" } ]}, {_id : false, movieId: true, card_image: true});
+    const dramaList = await Content.find({$or:[ { category: "드라마" }, { category: "단편" } ]}, {_id : false, movieName : true, movieId: true, category: true, make_year: true, card_image: true});
+    const action_war_List = await Content.find({$or:[ { category: "액션" }, { category: "전쟁" } ]}, {_id : false, movieName : true, movieId: true, category: true, make_year: true, card_image: true});
+    const comedy_adventure__biography_List = await Content.find({$or:[ { category: "코미디" }, { category: "모험" }, { category: "전기" } ]}, {_id : false, movieName : true, movieId: true, category: true, make_year: true, card_image: true});
+    const fantasy_crime_romanse_etc_list = await Content.find({$or:[ { category: "판타지" }, { category: "범죄" },{ category: "로맨스" }, { category: "애니메이션" },{ category: "스릴러" }, { category: "SF" }, { category: "미스터리" } ]}, {_id : false, movieName : true, movieId: true, category: true, make_year: true, card_image: true});
 
     const categoryList = {
       drama : dramaList,
