@@ -14,7 +14,7 @@ const UsersSchema = Joi.object({
       )
     )
     .required(),
-  password: Joi.string().pattern(new RegExp("^[a-zA-Z0-9]{4,30}$")).required(),
+  password: Joi.string().pattern(new RegExp("^[0-9a-zA-Z가-힣ㄱ-ㅎㅏ-ㅣ`~!@#$%^&*()\\-_=+\\[{\\]}\\\\|;:'\",<.>/?\\s]{4,30}$")).required(),
   confirmpassword: Joi.string().required(),
 });
 
