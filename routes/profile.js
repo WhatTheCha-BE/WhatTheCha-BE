@@ -6,7 +6,7 @@ const jwt = require("jsonwebtoken");
 const auth = require("../middelwares/auth-middleware");
 const router = express.Router();
 
-// 프로필 선택 페이지 (해당 계정의 프로필불러오기 (프로필 내부 정보 같이 보내주기 ))
+// 프로필 보여주기 페이지 (해당 계정의 프로필불러오기 (프로필 내부 정보 같이 보내주기 ))
 router.get("/profile", auth, async (req, res, next) => {
   // 이메일(로그인 계정)의 해당 프로필들 보내주기
   const { email } = req.headers;
@@ -95,6 +95,26 @@ router.post("/profile/create", auth, async (req, res) => {
     });
   }
 });
+
+// 프로필 선택
+router.post('/profile/checkin', async (req, res) =>{
+ 
+  try{
+    const { email, profileName } = req.body;
+
+    const checkinProfile = await Profile.findOne({ email: email, profileName: profileName });
+    
+    res.status(201).send({
+      checkinProfile,
+    })
+
+  }catch(err){
+    console.log(err);
+    res.status(400).send({
+      errorMessage: "요청한 형식이 올바르지 않습니다.",
+    });
+  }
+})
 
 //프로필 삭제
 router.delete("/profile/delete/:profileName", auth, async (req, res) => {
