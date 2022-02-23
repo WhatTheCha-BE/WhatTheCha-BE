@@ -189,7 +189,6 @@ router.post("/content/detail/movieId/want", async (req, res) => {
     const existprofileName = await Profile.findOne({ profileName:profileName }, { _id:false });
     console.log(`11existprofileName결과: ${existprofileName}`);
     if (existprofileName.profileName === profileName)
-    // const existmovieId = await Content.find({movieId:movieId}, {_id:false});
     
     await Profile.updateOne({ profileName:profileName }, {$push: {want:movieId}});
     res.status(200).json({
