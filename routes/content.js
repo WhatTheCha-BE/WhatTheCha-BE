@@ -186,34 +186,39 @@ router.get("/content/doneEvaluation", async (req, res) => {
 
 
 
-// //보고싶어요 누르기 --수정중
+// //보고싶어요 누르기 
 // movieId가 있을때, 없을때를 구별해서 반복문돌리기
 router.post("/content/detail/movieId/want", async (req, res) => {
   try {
     const { movieId, profileName } = req.body;
-    console.log("11누르기req.body", req.body)  //{ movieId: 61, profileName: 'user1' }
+    console.log("11누르기req.body", req.body)  
     
-    const myprofileName = await Profile.findOne({ profileName:profileName }, { _id: false, want:true });
-    console.log("22누르기myprofileName", myprofileName)   //{ want: [ 20, 21, 22, 23, 60, 61 ] }
-    
+    const myprofileName = await Profile.findOne({ profileName:profileName }, { _id: false });
+    console.log("22myprofileName:", myprofileName)
     const wantMovieId = myprofileName.want
-    console.log("33wantMovieId:", wantMovieId)   // [ 20, 21, 22, 23, 60, 61 ] 
-    console.log("33원트무비아디타입:", typeof(wantMovieId))   // undefined
-    console.log("33movieId:", movieId)   // 60 
-    console.log("33movieId타입:", typeof(movieId))   // 60 
-    
-    if (wantMovieId !== movieId){
+    console.log("22wantMovieId:", wantMovieId)
+
+    let check = -1;
+    for (let i=0; i<wantMovieId.length; i++) {
+      if ( wantMovieId[i] === movieId ){
+          check = 1;
+        } 
+    }
+    console.log(123123, check);
+    if (check === 1){
+      await Profile.updateOne({ profileName:profileName }, {$pull: {want:movieId}});
+      res.status(200).json({
+        ok: true,
+        message: "보고싶어요 취소 성공",
+      });
+    } else if(check === -1) {
       await Profile.updateOne({ profileName:profileName }, {$push: {want:movieId}});
       res.status(200).json({
         ok: true,
         message: "보고싶어요 누르기 성공",
       });
-    } else {
-      res.status(400).json({
-        ok: false,
-        errorMessage: "보고싶어요는 한번만 눌러주세요",
-      });
     }
+     
   } catch (err) {
     res.status(500).json({
       ok: false,
@@ -222,7 +227,6 @@ router.post("/content/detail/movieId/want", async (req, res) => {
     console.log(`보고싶어요 에러": ${err}`);
   }
 });
-
 
 //평가 누르기
 //+1만 가능하게 수정하기
