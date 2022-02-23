@@ -41,6 +41,7 @@ router.get("/profile", auth, async (req, res, next) => {
 router.post("/profile/create", auth, async (req, res) => {
   try {
     const { profileName, profileImage } = req.body;
+    console.log('받았을때 확인: ', profileName, profileImage)
     // const { email } = req.locals;
     const { email } = req.headers;
 
