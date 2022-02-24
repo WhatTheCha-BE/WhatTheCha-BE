@@ -17,15 +17,16 @@ router.post('/content/list', async (req, res) => {
     const { profileName, listRelay, want } = req.body;
 
     const listTop = await Content.find({},{_id : false, movieName : true, movieId: true, category: true, make_year: true, card_image: true}).sort('-average_star').limit(10);
+    const profileInfo = await Profile.findOne({profileName}, {_id: false, want: true, listRelay: true})
 
     let relayList = [];
-    for (let element of listRelay) {
+    for (let element of profileInfo.listRelay) {
           const movieInfo = await Content.find({movieId: element.movieId}, {_id : false, movieName : true, movieId: true, category: true, make_year: true, card_image: true});
           relayList.push(movieInfo);
       };
   
     let wantList = [];
-    for (let element of want) {
+    for (let element of profileInfo.want) {
     const movieInfomation = await Content.find({movieId: element}, {_id : false, movieName : true, movieId: true, category: true, make_year: true, card_image: true});
       wantList.push(movieInfomation);
     };
