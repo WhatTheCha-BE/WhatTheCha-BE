@@ -2,6 +2,7 @@ const jwt = require('jsonwebtoken');
 const User = require('../schemas/users');
 
 module.exports = (req, res, next) => {
+    console.log('미들웨어의 headers: ',req.headers);
     const { authorization } = req.headers;
     const { email } = req.headers;
     console.log('미들웨어: ', authorization, email);
