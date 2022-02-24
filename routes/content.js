@@ -76,6 +76,7 @@ router.post("/content/detail", async (req,res) => {
 //보고싶어요:리스트
 router.post("/content/want", async (req, res) => {
   try{
+    console.log(req.body);
       const { profileName } = req.body;
       
       //프로필디비에서 profileName기준으로 want를 찾는다.
