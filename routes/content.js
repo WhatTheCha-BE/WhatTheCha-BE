@@ -102,7 +102,7 @@ router.post("/content/want", async (req, res) => {
   
   
 //이어보기:리스트--작업중
-router.get("/content/continue", async (req, res) => {
+router.post("/content/continue", async (req, res) => {
   try{
     const { profileName } = req.body;
     const existlistRelay = await Profile.findOne({ profileName }, { _id : false, listRelay:true });
@@ -132,7 +132,7 @@ router.get("/content/continue", async (req, res) => {
 
 
 //다 본 작품:리스트
-router.get("/content/complete", async (req, res) => {
+router.post("/content/complete", async (req, res) => {
   try{
     const { profileName } = req.body;
     const existcomplete = await Profile.findOne({ profileName }, { _id : false, complete:true });
@@ -160,7 +160,7 @@ router.get("/content/complete", async (req, res) => {
 
 
 //평가한 작품 리스트
-router.get("/content/doneEvaluation", async (req, res) => {
+router.post("/content/doneEvaluation", async (req, res) => {
   try{
     //프로필디비에서 profileName기준으로 doneEvaluation 찾는다.
     const { profileName } = req.body;
