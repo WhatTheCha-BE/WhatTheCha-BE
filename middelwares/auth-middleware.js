@@ -10,7 +10,7 @@ module.exports = (req, res, next) => {
 
     if (tokenType !== 'Bearer') {
         res.status(401).send({
-            errorMessage: '로그인 후 사용해주세요.',
+            errorMessage: '1번 로그인 후 사용해주세요.',
         });
         console.log('tokenType !== Bearer')
         return;
@@ -26,7 +26,7 @@ module.exports = (req, res, next) => {
         });
     } catch (error) {
         res.status(401).send({
-            errorMessage: '로그인 후 사용해주세요!',
+            errorMessage: '2번 로그인 후 사용해주세요!',
         });
         console.log('err', error);
         return;
