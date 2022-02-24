@@ -12,7 +12,7 @@ const exclusiveContentSchema = new mongoose.Schema({
   country: String,
   make_year: String,
   detail_text: String,
-  numberOfStarRated: String
+  numberOfStarRated: String,
 });
 
 module.exports = mongoose.model('exclusiveContent', exclusiveContentSchema);
