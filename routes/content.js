@@ -21,13 +21,13 @@ router.post('/content/list', async (req, res) => {
 
     let relayList = [];
     for (let element of profileInfo.listRelay) {
-          const movieInfo = await Content.find({movieId: element.movieId}, {_id : false, movieName : true, movieId: true, category: true, make_year: true, card_image: true});
+          const movieInfo = await Content.findOne({movieId: element.movieId}, {_id : false, movieName : true, movieId: true, category: true, make_year: true, card_image: true});
           relayList.push(movieInfo);
       };
   
     let wantList = [];
     for (let element of profileInfo.want) {
-    const movieInfomation = await Content.find({movieId: element}, {_id : false, movieName : true, movieId: true, category: true, make_year: true, card_image: true});
+    const movieInfomation = await Content.findOne({movieId: element}, {_id : false, movieName : true, movieId: true, category: true, make_year: true, card_image: true});
       wantList.push(movieInfomation);
     };
 
