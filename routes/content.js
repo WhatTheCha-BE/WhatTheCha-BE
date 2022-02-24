@@ -102,19 +102,13 @@ router.post("/content/want", async (req, res) => {
 });
   
   
-//이어보기:리스트--작업중
+//이어보기:리스트
 router.post("/content/continue", async (req, res) => {
   try{
     const { profileName } = req.body;
     const existlistRelay = await Profile.findOne({ profileName }, { _id : false, listRelay:true });
-    console.log("111existlistRelay.listRelay: ", existlistRelay.listRelay);
-
-
-    //listRelay movieId를 기준으로 card_image를 찾는다. movieId처럼 Number로 왔을때가능한 로직
-    //스트링으로 오면 다시짜기
     const listRelayMovieId = existlistRelay.listRelay
     const listRelay = await Content.find({ movieId:listRelayMovieId }, { _id:false, movieId:true, card_image:true });
-    console.log("222listRelay@@", listRelay);  // [{movieId:30, card_image:~~},{movieId:31, card_image:~~}]
 
     res.status(200).json({
       listRelay,
@@ -137,12 +131,8 @@ router.post("/content/complete", async (req, res) => {
   try{
     const { profileName } = req.body;
     const existcomplete = await Profile.findOne({ profileName }, { _id : false, complete:true });
-
-    //complete movieId를 기준으로 card_image를 찾는다. movieId처럼 Number로 왔을때가능한 로직
-    //스트링으로 오면 다시짜기
     const completeMovieId = existcomplete.complete
     const complete = await Content.find({ movieId:completeMovieId }, { _id:false, movieId:true, card_image:true });
-    console.log("222listRelay@@", complete);  // [{movieId:30, card_image:~~},{movieId:31, card_image:~~}]
   
     res.status(200).json({
       complete,
@@ -193,12 +183,9 @@ router.post("/content/doneEvaluation", async (req, res) => {
 router.post("/content/detail/movieId/want", async (req, res) => {
   try {
     const { movieId, profileName } = req.body;
-    console.log("11누르기req.body", req.body)  
     
     const myprofileName = await Profile.findOne({ profileName:profileName }, { _id: false });
-    console.log("22myprofileName:", myprofileName)
     const wantMovieId = myprofileName.want
-    console.log("22wantMovieId:", wantMovieId)
 
     let check = -1;
     for (let i=0; i<wantMovieId.length; i++) {
@@ -235,13 +222,10 @@ router.post("/content/detail/movieId/want", async (req, res) => {
 router.post("/content/detail/movieId/star", async (req, res) => { 
   try { 
     const { movieId, profileName } = req.body; 
-    console.log("11누르기req.body", req.body)  
 
     //profileName을 기준으로 doneEvaluation을 찾는다.
     const myprofileName = await Profile.findOne({ profileName:profileName }, { _id: false });
     const EvaluMovieId = myprofileName.doneEvaluation
-    console.log("22myprofileName:", myprofileName)
-    console.log("22wantMovieId:", EvaluMovieId)
 
     let check = -1;
     for (let i = 0; i < EvaluMovieId.length; i++) {
