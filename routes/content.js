@@ -227,30 +227,50 @@ router.post("/content/detail/movieId/want", async (req, res) => {
       ok: false,
       errorMessage: "보고싶어요 누르기 예상치 못한 에러 발생했습니다.",
     });
-    console.log(`보고싶어요 에러": ${err}`);
+    console.log(`보고싶어요 누르기 에러": ${err}`);
   }
 });
 
+
 //평가 누르기
-//+1만 가능하게 수정하기
 router.post("/content/detail/movieId/star", async (req, res) => { 
-  try {
+  try { 
     const { movieId, profileName } = req.body; 
-      
+    console.log("11누르기req.body", req.body)  
+
     //profileName을 기준으로 doneEvaluation을 찾는다.
-    const myProfileprofileName = await Profile.findOne({ profileName:profileName }, { _id: false });
-    if (myProfileprofileName.profileName === profileName)
-    
-    await Profile.updateOne({ profileName:profileName }, {$push: {doneEvaluation:movieId}});
-    res.status(200).json({
-      ok: true,
-      message: "평가 성공",
-    });
+    const myprofileName = await Profile.findOne({ profileName:profileName }, { _id: false });
+    const EvaluMovieId = myprofileName.doneEvaluation
+    console.log("22myprofileName:", myprofileName)
+    console.log("22wantMovieId:", EvaluMovieId)
+
+    let check = -1;
+    for (let i = 0; i < EvaluMovieId.length; i++) {
+    if ( EvaluMovieId[i] === movieId ){
+        check = 1;
+      } 
+    }
+    console.log("123 check값은?", check);
+    if (check === 1){
+      await Profile.updateOne({ profileName:profileName }, {$pull: {doneEvaluation:movieId}});
+      res.status(200).json({
+        ok: true,
+        message: "평가 취소 성공",
+      });
+    } else if(check === -1) {
+      await Profile.updateOne({ profileName:profileName }, {$push: {doneEvaluation:movieId}});
+      res.status(200).json({
+        ok: true,
+        message: "평가 누르기 성공",
+      });
+    }
+
   } catch (err) {
     res.status(400).json({
       ok: false,
-      errorMessage: "평가 실패",
+      errorMessage: "평가 누르기 예상치 못한 에러 발생했습니다.",
     });
+    console.log(`평가 누르기 에러: ${err}`);
   }
 });
 
