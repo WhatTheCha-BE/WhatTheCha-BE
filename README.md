@@ -9,12 +9,12 @@ FE - 명석환, 우혜민
 BE - 김지성, 박수지, 이학진
 
 # 사용기술 
--javascript
--Node.js
--JWT
--VScode
--GitHub
--MongoDB
+- javascript
+- Node.js
+- JWT
+- VScode
+- GitHub
+- MongoDB
 
 # 주요기능 
 - 계정당 4개의 프로필 생성 가능
