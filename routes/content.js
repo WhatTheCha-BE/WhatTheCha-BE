@@ -74,7 +74,7 @@ router.post("/content/detail", async (req,res) => {
 
 
 //보고싶어요:리스트
-router.get("/content/want", async (req, res) => {
+router.post("/content/want", async (req, res) => {
   try{
       const { profileName } = req.body;
       
