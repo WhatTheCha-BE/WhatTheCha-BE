@@ -14,11 +14,12 @@ const User = require("../schemas/users");
 // 메인 페이지 전체 리스트
 router.post('/content/list', async (req, res) => {
   try {
-    const { profileName, listRelay, want } = req.body;
+    const { profileName } = req.body;
 
     const listTop = await Content.find({},{_id : false, movieName : true, movieId: true, category: true, make_year: true, card_image: true}).sort('-average_star').limit(10);
     const profileInfo = await Profile.findOne({profileName}, {_id: false, want: true, listRelay: true})
-
+    console.log(profileInfo)
+    
     let relayList = [];
     for (let element of profileInfo.listRelay) {
           const movieInfo = await Content.find({movieId: element.movieId}, {_id : false, movieName : true, movieId: true, category: true, make_year: true, card_image: true});
